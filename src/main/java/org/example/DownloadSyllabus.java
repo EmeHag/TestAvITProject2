@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -18,16 +19,16 @@ public class DownloadSyllabus {
         Main.chromeDriver();
 
         // Navigate to the course syllabus
-        $(By.cssSelector("button.ltu-search-btn")).click();
+        $(By.cssSelector("button.ltu-search-btn")).shouldBe(visible).click();
 
         // Search for the course
-        $(By.id("cludo-search-bar-input")).setValue("I0015N").pressEnter();
+        $(By.id("cludo-search-bar-input")).shouldBe(visible).setValue("I0015N").pressEnter();
 
         // Click the course, has to click on Våren 2024 because it is mislabelled
-        $(byText("Våren 2024")).click();
+        $(byText("Våren 2024")).shouldBe(visible).click();
 
         // Click the link to the syllabus
-        $(By.linkText("Kursplan")).click();
+        $(By.linkText("Kursplan")).shouldBe(visible).click();
 
         // Find the link to the PDF file
         SelenideElement pdfLink = $(By.cssSelector("a.utbplan-pdf-link"));
