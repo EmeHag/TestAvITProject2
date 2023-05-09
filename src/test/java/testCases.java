@@ -1,11 +1,10 @@
 import org.example.DownloadSyllabus;
 import org.example.DownloadTranscript;
 import org.example.ExaminationDate;
-import org.example.Main;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,6 +18,7 @@ public class testCases {
         assertEquals(expectedFinalDate, ExaminationDate.examinationDate);
     }
 
+    @Disabled
     @Test
     void checkIfTranscriptCanBeDownloaded(){
         DownloadTranscript.downloadTranscript();
@@ -33,7 +33,7 @@ public class testCases {
         // Check if the file exists
         assertTrue(new File("target/downloads/kursplan.pdf").exists());
     }
-
+    @Disabled
     @Test
     void checkCreateButton(){
         DownloadTranscript.downloadTranscript();

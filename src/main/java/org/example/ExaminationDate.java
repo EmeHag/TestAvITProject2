@@ -7,7 +7,6 @@ import org.openqa.selenium.By;
 import java.io.File;
 import java.io.IOException;
 
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byLinkText;
 import static com.codeborne.selenide.Selectors.byXpath;
 import static com.codeborne.selenide.Selenide.$;
