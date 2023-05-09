@@ -1,23 +1,23 @@
 package org.example;
 
-import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byLinkText;
 import static com.codeborne.selenide.Selectors.byXpath;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.switchTo;
+import static org.example.Main.logger;
 
 public class DownloadTranscript {
+    private static boolean registreringsintygsButtonIsVisible = false;
 
-    public static void downloadTranscript() throws FileNotFoundException {
+    public static void downloadTranscript(){
         Main.startProgramLogIn();
         $(byXpath("//a[contains(text(),' Intyg »')]")).shouldBe(visible).click();
 
@@ -30,7 +30,7 @@ public class DownloadTranscript {
 
         $(By.cssSelector("a.institution.identityprovider.bts-dynamic-item[data-href='https://idp.ltu.se/idp/shibboleth'] li")).shouldBe(visible).click();
 
-
+        $(By.linkText("På svenska")).shouldBe(visible).click();
         $(By.linkText("Intyg")).shouldBe(visible).click();
 
         //$(By.cssSelector("button.btn.btn-ladok-brand")).shouldBe(visible).click();
@@ -40,7 +40,12 @@ public class DownloadTranscript {
         // $(By.xpath("//span[text()='Skapa']")).shouldBe(visible).click();
 
         // click the link
-        $(By.linkText("Registreringsintyg")).shouldBe(visible).click();
+        if ($(By.linkText("Registreringsintyg")).shouldBe(visible).isDisplayed()) {
+            registreringsintygsButtonIsVisible = true;
+            $(By.linkText("Registreringsintyg")).shouldBe(visible).click();
+        } else {
+            logger.warn("Registreringsintyg is not visible");
+        }
 
         // File downloadIntyg = $(By.tagName("body")).download();
         SelenideElement pdfLink = $(By.partialLinkText("intyg"));
@@ -56,5 +61,9 @@ public class DownloadTranscript {
             e.printStackTrace();
         }
 
+    }
+
+    public static boolean isRegistreringsintygsButtonIsVisible() {
+        return registreringsintygsButtonIsVisible;
     }
 }

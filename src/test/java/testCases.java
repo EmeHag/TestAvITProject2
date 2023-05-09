@@ -20,7 +20,7 @@ public class testCases {
     }
 
     @Test
-    void checkIfTranscriptCanBeDownloaded() throws FileNotFoundException {
+    void checkIfTranscriptCanBeDownloaded(){
         DownloadTranscript.downloadTranscript();
         // Check if the file exists
         assertTrue(new File("target/downloads/Intyg.pdf").exists());
@@ -34,11 +34,12 @@ public class testCases {
         assertTrue(new File("target/downloads/kursplan.pdf").exists());
     }
 
-/*    @Test
+    @Test
     void checkCreateButton(){
-        assertTrue(DownloadTranscript.getCreateTranscriptButtonExists());
+        DownloadTranscript.downloadTranscript();
+        assertTrue(DownloadTranscript.isRegistreringsintygsButtonIsVisible());
     }
-    */
+
 
 
 }
