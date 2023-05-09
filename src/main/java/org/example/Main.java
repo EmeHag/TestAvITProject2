@@ -1,6 +1,7 @@
 package org.example;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Credentials;
 import com.codeborne.selenide.Screenshots;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +34,8 @@ public class Main {
 
         //Cookies
         $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible).click();
-       // $(By.id("CybotCookiebotDialogBodyButtonDecline")).click();
+
+        logger.info("Driver initialized and cookies accepted");
     }
 
     public static void startProgramLogIn(){
@@ -50,8 +52,9 @@ public class Main {
             // Extract the username and password values
             email = jsonNode.get("ltuCredentials").get("email").asText();
             password = jsonNode.get("ltuCredentials").get("password").asText();
+            logger.info("Credentials successfully imported");
         } catch (IOException e) {
-            System.out.println("e");
+            logger.error(e.getMessage());
         }
 
         chromeDriver();
