@@ -11,6 +11,9 @@ import com.codeborne.selenide.Configuration;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
 
+import com.codeborne.selenide.Selenide;
+import static com.codeborne.selenide.Selectors.*;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +67,24 @@ public class Main {
 
         // Verify that the login was successful
         titleHomePage = title();
-        System.out.println(titleHomePage);
+
+        checkFinalExaminationDate();
+    }
+
+
+    public static void checkFinalExaminationDate (){
+        //Click on the tentamen button
+        $(byXpath("//a[contains(text(),'Tentamen')]")).click();
+
+        // Click on the tentamensschema button
+        $(byXpath("//a[contains(text(),'Tentamensschema')]")).click();
+
+        // Switch to the new tab
+        switchTo().window(1);
+
+        // Close the previous tab
+        switchTo().window(0).close();
+
+
     }
 }
