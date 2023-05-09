@@ -26,17 +26,22 @@ public class Main {
         startProgramLogIn();
     }
 
-    public static void chromeDriver (){
-        holdBrowserOpen = true;
-        System.setProperty("webdriver.chrome.driver", "src/main/java/chromedriver.exe");
-        Configuration.startMaximized = true;
-        open("https://www.ltu.se");
+    public static void chromeDriver() {
+        try {
+            holdBrowserOpen = true;
+            System.setProperty("webdriver.chrome.driver", "src/main/java/chromedriver.exe");
+            Configuration.startMaximized = true;
+            open("https://www.ltu.se");
 
-        //Cookies
-        $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible).click();
+            //Cookies
+            $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible).click();
 
-        logger.info("Driver initialized and cookies accepted");
+            logger.info("Driver initialized and cookies accepted");
+        } catch (Exception e) {
+            logger.error("Error while initializing driver: " + e.getMessage());
+        }
     }
+
 
     public static void startProgramLogIn(){
         //Configuration.
