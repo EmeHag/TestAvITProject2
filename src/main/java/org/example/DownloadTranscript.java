@@ -42,7 +42,7 @@ public class DownloadTranscript {
         // click the link
         $(By.linkText("Registreringsintyg")).shouldBe(visible).click();
 
-       // File downloadIntyg = $(By.tagName("body")).download();
+        // File downloadIntyg = $(By.tagName("body")).download();
         SelenideElement pdfLink = $(By.partialLinkText("intyg"));
 
         try {

@@ -12,6 +12,7 @@ import static com.codeborne.selenide.Selectors.byLinkText;
 import static com.codeborne.selenide.Selectors.byXpath;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.switchTo;
+import static org.example.Main.logger;
 
 public class ExaminationDate {
 
@@ -20,19 +21,19 @@ public class ExaminationDate {
     public static void checkFinalExaminationDate (){
         Main.startProgramLogIn();
         //Click on the tentamen button
-        $(byXpath("//a[contains(text(),'Tentamen')]")).shouldBe(visible).click();
+        $(byXpath("//a[contains(text(),'Tentamen')]")).click();
 
         // Click on the tentamensschema button
-        $(byXpath("//a[contains(text(),'Tentamensschema')]")).shouldBe(visible).click();
+        $(byXpath("//a[contains(text(),'Tentamensschema')]")).click();
 
         // Switch to the new tab
         switchTo().window(1);
 
         // find the search field by ID and enter the value "I0015N"
-        $("#enkel_sokfalt").shouldBe(visible).setValue("I0015N").pressEnter();
+        $("#enkel_sokfalt").setValue("I0015N").pressEnter();
 
         // Click on the course link
-        $(byLinkText("I0015N-VT23-47000-, Test av IT-system vt234 50")).shouldBe(visible).click();
+        $(byLinkText("I0015N-VT23-47000-, Test av IT-system vt234 50")).click();
 
         // Switch to the new tab
         switchTo().window(2);
@@ -48,8 +49,10 @@ public class ExaminationDate {
             // Save the screenshot to a specific directory with a specific name
             FileUtils.copyFile(screenshotFile, new File("target/screenshots/final_examination.jpeg"));
         } catch (IOException e) {
-            System.out.println("Failed to save screenshot: " + e.getMessage());
+            logger.error("Failed to save screenshot: " + e.getMessage());
         }
 
+        switchTo().window(0);
+        Main.logOut();
     }
 }

@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static org.example.Main.logger;
 
 public class DownloadSyllabus {
 
@@ -39,9 +40,9 @@ public class DownloadSyllabus {
 
             // Move the downloaded file to the target/downloads directory with the name "kursplan.pdf"
             Files.move(downloadedFile.toPath(), new File("target/downloads/kursplan.pdf").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            logger.info("File downloaded successfully");
         } catch (IOException e) {
-            // Handle the exception here
-            e.printStackTrace();
+            logger.error("File download failed" + e.getMessage());
         }
 
     }
