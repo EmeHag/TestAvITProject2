@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class TestCaseDownloadSyllabus {
 
-    public static void downloadSyllabus() throws IOException {
+    public static void downloadSyllabus(){
         // Read the JSON file
         Main.chromeDriver();
 
@@ -33,10 +33,16 @@ public class TestCaseDownloadSyllabus {
         // Find the link to the PDF file
         SelenideElement pdfLink = $(By.cssSelector("a.utbplan-pdf-link"));
 
-        // Click the link to download the file
-        File downloadedFile = pdfLink.download();
+        try {
+            // Click the link to download the file
+            File downloadedFile = pdfLink.download();
 
-        // Move the downloaded file to the target/downloads directory with the name "kursplan.pdf"
-        Files.move(downloadedFile.toPath(), new File("target/downloads/kursplan.pdf").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            // Move the downloaded file to the target/downloads directory with the name "kursplan.pdf"
+            Files.move(downloadedFile.toPath(), new File("target/downloads/kursplan.pdf").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            // Handle the exception here
+            e.printStackTrace();
+        }
+
     }
 }
