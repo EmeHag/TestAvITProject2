@@ -1,0 +1,1179 @@
+<html><head>
+	<title>KronoX Web</title>
+	
+	<link rel="shortcut icon" href="/images/favicon.gif">
+
+	<link type="text/css" href="/css/jquery.ui.core.css" rel="stylesheet">
+	<link type="text/css" href="/css/custom-theme/jquery-ui-1.13.2.custom.min.css" rel="stylesheet">
+	<link type="text/css" href="/css/custom-theme/jquery-ui-1.13.2.custom.structure.css" rel="stylesheet">
+	<link type="text/css" href="/css/custom-theme/jquery-ui-1.13.2.custom.theme.css" rel="stylesheet">
+	<link type="text/css" href="/css/signin.css" rel="stylesheet">
+
+	<link type="text/css" href="/css/demo_table.css?" rel="stylesheet">
+	<link type="text/css" href="/css/kronox-style.css?v=5.3.4.build-8138" rel="stylesheet">
+	<link type="text/css" href="/css/larosatesanpassningar-style.css?v=1683625783224" rel="stylesheet">
+
+	<script type="text/javascript" src="/jquery/jquery-3.6.1.min.js"></script>
+	<script type="text/javascript" src="/jquery-ui/jquery-ui-1.13.2.custom/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/jquery-ui/extensions/jquery.ui.autocomplete.html.js"></script>
+	<script type="text/javascript" src="/jquery-ui/extensions/jquery.ui.tooltip.altposition.min.js"></script>
+
+	<script type="text/javascript" src="/js/cookies.js"></script>
+	<script type="text/javascript" src="/js/dotimeout.js"></script>
+	
+	<script type="text/javascript" src="/js/date.js"></script>
+
+	
+	<script type="text/javascript" src="/js/json2.js"></script>
+
+
+
+	
+	<script type="text/javascript" src="/datepicker/datepicker-sv.js"></script>
+	
+
+	<link rel="stylesheet" type="text/css" href="/DataTables/datatables.min.css">
+	<script type="text/javascript" src="/DataTables/datatables.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.dataTables.columnFilter.js"></script>
+
+
+	<script type="text/javascript" src="/js/datum-hjalp.js"></script>
+
+	
+  	
+</head>
+
+<body style="margin:0;padding:0;">
+
+<script>
+$(document).ready(function() {
+
+	$(".tooltip").tooltip
+	(
+			{
+				content: function ()
+				{
+					return this.getAttribute("title");
+				},
+				classes:
+						{
+							"ui-tooltip": "ui-corner-all"
+						},
+				position:
+				{
+					my: 'left bottom-15',
+					at: 'right-15 top',
+					collision: 'flipfit',
+					using: function( position, feedback )
+					{
+						$( this ).css( position );
+						$( "<div>" )
+							//.addClass( feedback.vertical )
+							//.addClass( feedback.horizontal )
+						.appendTo( this );
+					}
+				}
+			}
+	);
+
+
+	$(".tooltip-bred").tooltip
+	(
+		{
+			content: function ()
+			{
+				return this.getAttribute("title");
+			},
+			classes:
+			{
+				"ui-tooltip": "ui-corner-all"
+			}
+		}
+	);
+
+	$(".tTip").tooltip
+	(
+		{
+			content: function ()
+			{
+				return this.getAttribute("title");
+			},
+			classes:
+			{
+				"ui-tooltip": "ui-corner-all"
+			}
+		}
+	);
+	
+    $(".signin").click(function(e) {          
+		e.preventDefault();
+        $("fieldset#signin_menu").toggle();
+		$(".signin").toggleClass("menu-open");
+		
+		document.getElementById("signin-container").style.zIndex = "100";
+		
+		//document.getElementById('login_username').focus();
+		document.getElementById('login_username').select();
+		
+    });
+	
+	$("fieldset#signin_menu").mouseup(function() {
+		return false
+	});
+	$(document).mouseup(function(e) {
+		if($(e.target).parent("a.signin").length==0) {
+			$(".signin").removeClass("menu-open");
+			$("fieldset#signin_menu").hide();
+		}
+	});
+	
+	$( "#login_button").button();
+	//$( "#login_button").click(function() { do_login();return false; });
+	$( "#login_button").click(function() { return validate_login(); });
+
+	
+	$( "#resursDialog" ).dialog({
+		autoOpen: false,
+		//show: "blind",
+		//hide: "blind",
+		height: 100,
+		dialogClass: 'noTitleDialog'
+	});
+	
+	
+	
+	
+});
+
+function validate_login(){
+	
+	var login_username = document.getElementById('login_username').value;
+	var login_password = document.getElementById('login_password').value;
+	
+	if (!login_username || login_username.length < 1){
+		alert("Du måste ange ditt användar id.");
+		return false;
+	}
+	
+	return true;
+	
+}
+
+function set_lang(newlang){
+	
+	var resp = $.ajax({
+   		url: '/ajax/ajax_lang.jsp',
+   		global: false,
+      	type: "GET",
+      	data: ({
+      		lang : newlang
+      	}),
+      	dataType: "html",
+      	async:false
+   	}).responseText;
+	
+	if (resp != 'OK'){
+		alert(resp);
+		return;
+	}
+	else{
+		// tabort alla nuvarande sprak ur länken
+		var url = ""+window.location;
+		url = url.replace("sprak=SV", "sprak="+newlang);
+		url = url.replace("sprak=EN", "sprak="+newlang);
+		
+		if (newlang == "EN"){
+			url = url.replace("idag", "today");
+		}
+		else if (newlang == "SV"){
+			url = url.replace("today", "idag");
+		}
+		
+		document.location.href = url;
+		
+		//window.location = url;
+		//window.location.reload();
+	}
+}
+
+function toggle_visibility(id) {
+    var e = document.getElementById(id);
+    if(e.style.display == 'block')
+       e.style.display = 'none';
+    else
+       e.style.display = 'block';
+}
+
+function hide_element(id){
+	var e = document.getElementById(id);
+	e.style.display = 'none';
+}
+
+function show_element(id){
+	var e = document.getElementById(id);
+	e.style.display = 'block';
+}
+
+function mittSchemaResursAdd(typ, id){
+	
+	var resp = $.ajax({
+   		url: '/ajax/ajax_avanceratschema.jsp',
+   		global: false,
+      	type: "GET",
+      	data: ({
+      		op : "laggTillResurs",
+      		resursId : id,
+      		resursTyp : typ
+      	}),
+      	dataType: "html",
+      	async:false
+   	}).responseText;
+	
+	$( "#resursDialog" ).html( resp );
+	$( "#resursDialog" ).dialog( "open" );
+	
+	resursDialogCallback();
+	
+	// TODO uppdatera toolbar + mittschema valda resurser
+}
+
+function resursDialogCallback() {
+	setTimeout(function() {
+		$( "#resursDialog" ).dialog( "close" );
+	}, 5000 );
+};
+
+function stangResursDialog(){
+	$( "#resursDialog" ).dialog( "close" );
+}
+
+//timeout polling för att hålla igång sessionen...
+// https://hackwild.com/article/web-worker-timers/
+var w;
+
+function startWorker()
+{
+	if(typeof(Worker) !== "undefined")
+	{
+		if(typeof(w) == "undefined")
+		{
+			w = new Worker("/js/session-poller-worker.jsp"); // Vi bygger upp JS med sessionsid i en jsp-fil
+
+			console.log('Caller: sekunderSedanSenastUppdaterad: 0');
+			console.log('Caller: millisSedanSenastUppdaterad: 0');
+			console.log('Caller: millisKvarTillNastaPoll: 120000');
+
+            w.postMessage('120000');
+			console.log('Message posted to worker to call session poller in ' + '120000' + ' ms');
+
+			w.onmessage = (e) =>
+			{
+				const svar = e.data;
+				console.log('Message '+svar+' received from worker');
+				if (svar === "SESSIONSFEL" || svar === "ERROR")
+				{
+					stopWorker();
+					window.location.reload();
+					return;
+				}
+			}
+		}
+	}
+	else
+	{
+		// Gamla timeout-lösningen
+		console.log('Worker API:t finns inte - failover till legacy poller');
+		$.doTimeout( 'sessionpoll', 120000, function(){
+
+			var resp = $.ajax({
+				url: '/ajax/ajax_session.jsp',
+				global: false,
+				type: "GET",
+				data: ({
+					op : "poll"
+				}),
+				dataType: "html",
+				async:false
+			}).responseText;
+
+			if (resp === "OK")
+			{
+				$.doTimeout( 'sessionpoll' );
+			}
+			else if (resp === "SESSIONSFEL" || resp === "ERROR")
+			{
+				window.location.reload();
+				return;
+			}
+
+			return true;
+		});
+	}
+}
+
+function stopWorker()
+{
+	w.terminate();
+	w = undefined;
+}
+
+startWorker();
+</script>
+
+
+
+
+
+<div class="main">
+
+	<div id="header" style="z-index:100;margin-bottom:15px;margin-top:15px;">
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tbody><tr>
+				<td style="padding-left:20px;">
+				<img src="/setup/logga_web_meny.jpg" border="0">
+				</td>
+				
+				<td>
+				
+					
+						<div id="signin-container" style="margin-top:-30px;margin-left:-10px;">
+							<div id="topnav" class="topnav"> 
+								
+								
+								
+								
+								<a href="#" onclick="set_lang('EN');return false;"><img src="/images/flagga_english.jpg" border="0" style="margin-right:5px;"></a>
+								
+								
+							
+								
+								<!-- <span style="color:black;">Har du ett konto?</span>  -->
+								<a style="margin-left:10px;" href="login" class="signin"><span>Logga in</span></a> 
+							
+							</div>  
+  							
+  							<fieldset class="signin_menu" id="signin_menu" style="display: none;">
+    							
+    								<form id="loginform" action="https://tenta.ltu.se/login_do.jsp" method="POST">
+    								<p style="margin-bottom:10px;">Här kan du logga in med ditt användarkonto</p>
+    							
+      								<p>
+      								<label for="login_username">Användarnamn</label>
+      								<input style="margin-top:3px;width:200px;height:24px;" id="login_username" name="username" value="" title="username" tabindex="4" type="text">
+      								</p>
+      								<p>
+        							<label for="login_password">Lösenord</label>
+        							<input style="margin-top:3px;width:200px;height:24px;" id="login_password" name="password" value="" tabindex="5" title="password" type="password">
+      								</p>
+      								
+      								<table>
+      									<tbody><tr>
+      									<td style="color:#000;">
+      									
+      									<input id="login_button" type="submit" value="Logga in" class="ui-button ui-corner-all ui-widget" role="button">
+      									
+      									</td>
+				      					</tr>
+      								</tbody></table>
+      								
+      								</form>
+      								
+				      				<!-- <p class="forgot"> <a href="#" id="resend_password_link">Glömt ditt lösenord?</a> </p>  -->
+				      				
+				    			
+  							</fieldset>
+  							
+						</div>
+						
+						
+					
+				
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	
+	
+	<div class="header">
+	<div style="z-index:1;margin-top:5px;">
+	
+        	<div class="nav">
+            	<ul class="menu">
+            		
+            		
+            		
+            		
+					<li class="current"><a href="/index.jsp"><em><b>Schema</b></em></a></li>
+					
+					<li class="nav-space">&nbsp;</li>
+					
+					<li class="tab"><a href="/avanceratschema.jsp"><em><b>Avancerad sök</b></em></a></li>
+					<li class="nav-space">&nbsp;</li>
+					
+					<li class="tab"><a href="/ao.jsp"><em><b>Schemaguide A-Ö</b></em></a></li>
+					<li class="nav-space">&nbsp;</li> 
+					
+					
+
+					
+
+					
+					
+				</ul>
+           	</div>
+       	
+   	</div>
+   	
+   	</div>
+   	
+   	<div class="header-bar">
+   		
+   	</div>
+   	<img src="/images/ovre_skuggning.gif" width="100%" height="5px">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+
+$(document).ready(function() {
+	
+	
+	
+	$("#startdatum").datepicker({
+		changeMonth: true,
+		changeYear: true,
+		showButtonPanel: true,
+		defaultDate: "23-05-09",
+		showOn: "button",
+		buttonImage: "images/calendar.gif",
+		buttonImageOnly: true
+	});
+
+	
+	$("#startdatum").datepicker($.datepicker.regional['sv']);
+	 
+
+	$("#startdatum").datepicker( "option", "dateFormat", 'y-mm-dd' );
+	//$("#startdatum").datepicker( "setDate" , new Date() );
+	$("#startdatum" ).datepicker( "option", "constrainInput", false );
+	document.getElementById('startdatum').value = "idag";
+	
+	
+	$("#slutdatum").datepicker({
+		changeMonth: true,
+		changeYear: true,
+		showButtonPanel: true,
+		defaultDate: "23-05-09",
+		showOn: "button",
+		buttonImage: "images/calendar.gif",
+		buttonImageOnly: true
+	});
+
+	
+	$("#slutdatum").datepicker($.datepicker.regional['sv']);
+	 
+
+	$("#slutdatum").datepicker( "option", "dateFormat", 'y-mm-dd' );
+	//$("#slutdatum").datepicker( "setDate" , new Date() );
+	
+	document.getElementById('slutdatum').value = "";
+	
+	uppdatera_sokdatumtext();
+
+});
+
+
+
+function formatera_startdatum(){
+	
+	
+	var startdatum = document.getElementById('startdatum').value;
+	
+	// idag
+	if (startdatum == "'idag'" || startdatum == 'idag'){
+		document.getElementById('startdatum').value = "idag";
+	}
+	else{
+		var datum = formatera_datum(document.getElementById('startdatum').value);
+		document.getElementById('startdatum').value = datum;
+	}
+	
+	seTillSaSlutDatumInteLiggerForeStart();
+	
+	intervall_datum_andrat();
+	
+	uppdatera_sokdatumtext();
+}
+
+function seTillSaSlutDatumInteLiggerForeStart(){
+	var slutdatum = get_slut_datum();
+	var startdatum = get_start_datum();
+	if (isAfter(startdatum, slutdatum)){
+		document.getElementById('slutdatum').value = startdatum.toString("yy-MM-dd");
+	}
+}
+
+
+//datum med format yy-MM-dd
+function isAfter(datum1, datum2){
+	var datum1D = Date.parseExact(datum1, "yy-MM-dd");
+	var datum2D = Date.parseExact(datum2, "yy-MM-dd");
+	
+	return datum1D > datum2D;
+}
+
+function formatera_slutdatum(){
+
+	// ta bort valda vÃ¤rden i intervallen
+	uncheck_intervalls();
+	
+	
+	var datum = formatera_datum(document.getElementById('slutdatum').value);
+	var startdatum = get_start_datum();
+	
+	if (startdatum == null || startdatum.length < 1){
+		document.getElementById('slutdatum').value = datum;
+		document.getElementById('startdatum').value = datum;
+	}
+	else if (isAfter(startdatum, datum)){
+		document.getElementById('slutdatum').value = datum;
+		document.getElementById('startdatum').value = datum;
+	}
+	else{
+		document.getElementById('slutdatum').value = datum;
+	}
+	
+	intervall_datum_andrat();
+	
+	uppdatera_sokdatumtext();
+}
+
+
+function get_intervall_value(){
+	
+	var elements = document.getElementsByName('intervall');
+	
+	for (var i=0; i < elements.length; i++){
+   		if (elements[i].checked){
+      		return elements[i].value;
+      	}
+   	}
+}
+
+function uncheck_intervalls(){
+	
+	var elements = document.getElementsByName('intervall');
+	
+	for (var i=0; i < elements.length; i++){
+   		if (elements[i].checked){
+      		elements[i].checked = false;
+      	}
+   	}
+}
+
+
+function get_start_datum(){
+	
+	var startdatum = document.getElementById('startdatum').value;
+	
+	if (startdatum == "idag"){
+		var d = new Date();
+		//startdatum = 
+		return d.toString("yy-MM-dd");
+	}
+	
+	return startdatum;
+	
+}
+
+function get_intervall_antal(){
+	var intervall = get_intervall_value();
+	var v;
+	
+	if (intervall == 1){
+		v = 1;
+	}
+	else if (intervall == 2){
+		v = 16;
+	}
+	else if (intervall == 3){
+		v = 6;
+	}
+	else{
+		return 1;
+	}
+	return v;
+}
+
+function get_intervall_typ(){
+	
+	var intervall = get_intervall_value();
+	var v;
+	
+	if (intervall == 1){
+		v = "d";
+	}
+	else if (intervall == 2){
+		v = "v";
+	}
+	else if (intervall == 3){
+		v = "m";
+	}
+	else{
+		return "";
+	}
+	return v;
+}
+
+function get_slut_datum(){
+	var slutdatum = document.getElementById('slutdatum').value;
+	var startdatum = get_start_datum();
+	
+	if (slutdatum != null && slutdatum.length > 0){
+		// anvÃ¤nd detta datum
+		return slutdatum;
+	}
+	else{
+		// berÃ¤kna slutdatum frÃ¥n intervall
+		
+		var intervall = get_intervall_value();
+		
+		var startDate = Date.parseExact(startdatum, "yy-MM-dd");
+		if (startDate == null){
+			// felaktigt inmatad... gÃ¤r till dagens datum
+			startDate = new Date();
+		}
+		
+		var typ;
+		var antal;
+		
+		if (intervall == 1){
+			typ = "d";
+			antal = "1";
+			
+		}
+		else if (intervall == 2){
+			typ = "v";
+			antal = 16;
+		}
+		else if (intervall == 3){
+			typ = "m";
+			antal = 6;
+		}
+		else{
+			// default vÃ¤rden om inget finns instÃ¤llt
+			typ = "m";
+			antal = 6;
+		}
+	
+		if (typ == "d"){
+			// add day
+			//startDate.setDate(startDate.getDate() + antal);
+			startDate.add(antal).days();
+		}
+		else if (typ == "v"){
+			// add week
+			startDate.setDate(startDate.getDate() + (7*antal));
+		}
+		else if (typ == "m"){
+			// add month
+			startDate.setMonth(startDate.getMonth() + antal);
+		}
+		else if (typ == "a"){
+			// add year
+			startDate.setYear(startDate.getFullYear() + antal);
+		}
+		
+		return startDate.toString("yy-MM-dd");
+	}
+}
+
+function uppdatera_sokdatumtext(){
+	
+	var startdatum = document.getElementById('startdatum').value;
+	
+	
+	
+		var forBokning = false;
+	
+	
+	
+		
+	var resp = $.ajax({
+   		url: 'ajax/ajax_datum.jsp',
+   		global: false,
+      	type: "GET",
+      	data: ({
+      		"op" : "hamtaDatumStrangMedBlockInformation",
+      		"forBokning" : forBokning
+      	}),
+      	dataType: "html",
+      	async:false 	
+   	}).responseText;
+	
+	$("#sokDatumText").html(resp);
+	
+	
+	
+	
+}
+
+function uppdatera_intervall(){
+	
+	// TÃ¶mslutdatum fÃ¤ltet
+	document.getElementById('slutdatum').value = "";
+	
+	intervall_datum_andrat();
+	
+	uppdatera_sokdatumtext();
+}
+
+function uppdatera_resurser_for_intervall(){
+	// default fÃ¶r schema
+	uppdatera_resurser_for_intervall(false);
+}
+
+function uppdatera_resurser_for_intervall(resurserForBokning){
+	
+	document.getElementById('intervall_progress').style.display = 'block';
+	
+	var start = document.getElementById('startdatum').value;
+	var slut = document.getElementById('slutdatum').value;
+	var intervall = get_intervall_typ();
+	var antal = get_intervall_antal();
+	
+	// start och slut Ã¤r pÃ¥ formatet yy-mm-dd men mÃ¥ste vara "datumtid" dvs yyyy-mm-dd nÃ¤r vi skickar till
+	// servern.
+	if (start != 'idag'){
+		var startDate = Date.parseExact(start, "yy-MM-dd");
+		
+		if (startDate == null){
+			alert("Felaktigt inmatat startdatum.");
+			document.getElementById('intervall_progress').style.display = 'none';
+			return;
+		}
+		
+		start = startDate.toString("yyyy-MM-dd");
+	}
+	
+	
+	if (slut != null && slut.length > 0){
+		var slutDate = Date.parseExact(slut, "yy-MM-dd");
+		slut = slutDate.toString("yyyy-MM-dd");
+	}
+	
+	var resp = $.ajax({
+   		url: 'ajax/ajax_resurser.jsp',
+   		global: false,
+      	type: "GET",
+      	data: ({
+      		"op" : "hamtaResurserForIntervall",
+      		"startDatum" : start,
+      		"slutDatum" : slut,
+      		"intervallTyp" : intervall,
+      		"intervallAntal" : antal,
+      		"resurserForBokning" : resurserForBokning
+      	}),
+      	dataType: "html",
+      	async:false
+      	
+   	}).responseText;
+	
+	if (resp != "OK"){
+		alert(resp);
+	}
+	
+	document.getElementById('intervall_progress').style.display = 'none';
+}
+
+
+</script>
+
+
+
+
+
+<script>
+
+$(document).ready(function() {
+	
+	$( "#enkel_sokknapp").button();
+	$( "#enkel_sokknapp").click(function() { enkel_sokning();return false; });
+	
+	
+	
+	
+
+});
+
+function intervall_datum_andrat(){
+	
+	uppdatera_resurser_for_intervall();
+	
+	$("#enkel_resultat").html("");
+	
+}
+
+function enkel_sokning(){
+	
+	
+	document.getElementById('enkel_progress').style.display = 'block';
+	
+	var sok = document.getElementById('enkel_sokfalt').value;
+	sok = encodeURIComponent(sok);
+	
+	var start = document.getElementById('startdatum').value;
+	
+	// start och slut är på formatet yy-mm-dd men måste vara "datumtid" dvs yyyy-mm-dd när vi skickar till
+	// servern.
+	if (start != 'idag'){
+		
+		var startDate = Date.parseExact(start, "yy-MM-dd");
+		if (startDate == null){
+			alert("Felaktigt inmatat startdatum.");
+			document.getElementById('enkel_progress').style.display = 'none';
+			return;
+		}
+		
+		start = startDate.toString("yy-MM-dd");
+		start = "20" + start;
+	}
+	
+	var slut = document.getElementById('slutdatum').value;
+	var intervall = get_intervall_typ();
+	var antal = get_intervall_antal();
+	
+	if (slut != null && slut.length > 0){
+		var slutDate = Date.parseExact(slut, "yy-MM-dd");
+		slut = slutDate.toString("yy-MM-dd");
+		slut = "20" + slut;
+	}
+	
+	
+	$.ajax({
+   		url: 'ajax/ajax_sokResurser.jsp',
+   		global: false,
+      	type: "GET",
+      	data: ({
+      		sokord : sok,
+      		startDatum : start,
+      		slutDatum : slut,
+      		intervallTyp : intervall,
+      		intervallAntal : antal
+      	}),
+      	dataType: "html",
+      	success: function(resp){
+      		// ladda in texten i sökresultatet
+      		
+      		if (resp == "SESSIONSFEL"){
+      			window.location.href = "inaktivSession.jsp";
+      			return;
+      		}
+      		
+      		
+      		$("#enkel_resultat").html(resp);
+      		$(".schemaIkon").tooltip
+			(
+				{
+					content: function ()
+					{
+						return this.getAttribute("title");
+					},
+					classes:
+					{
+						"ui-tooltip": "ui-corner-all"
+					}
+				}
+			);
+      		
+      		document.getElementById('enkel_progress').style.display = 'none';
+      		document.getElementById('enkel_sokfalt').select();
+      	},
+      	async:true
+      	
+   	});
+	
+	
+	
+}
+
+function tom_enkel_resultat(){
+	$("#enkel_resultat").html("");
+}
+
+
+</script>
+
+<style>
+#simple_searchbutton{
+	font-size:12px;	
+}
+.label{
+	font-size:12px;
+}
+.resurs_falt{
+	font-size:12px;
+	height:28px;
+}
+.icon_button{
+	font-size:12px;
+	height:24px;
+}
+
+#valda_resurser{
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border:1px solid gray;
+	font-size:12px;
+}
+
+#lank_div{
+	margin-top:5px;
+	margin-bottom:5px;
+	font-size:12px;
+}
+#lank_div a {
+	color:#188bef;
+}
+td {
+	font-size:12px;
+}
+</style>
+
+
+
+<div id="schemadiv" class="pagediv">
+<div class="contentdiv" style="width:980px;">
+	
+	<div style="font-size:12px;margin-bottom:10px;">
+		Visar resurser för: <b>Gäst </b>
+	</div>
+	
+	<div id="simple-search" style="margin-bottom:3px;">
+	
+	<div class="ui-widget-content ui-corner-all box-bakgrund" style="float:right;width:220px;height:145px;margin-top:-20px;margin-right:0px;padding:5px;border:1px solid #E6E7E6;">	
+			
+	<div>
+	<b>Schemaguide A-Ö:</b>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="program.jsp">Program</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="fristaendeKurser.jsp">Fristående kurser</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="allaKurser.jsp">Alla kurser</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="lokaler.jsp">Lokaler</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="signaturer.jsp">Signaturer</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	<div style="margin-top:5px;">
+	<table cellpadding="0" cellspacing="0">
+		<tbody><tr>
+		<td valign="middle"><img src="images/find.gif"></td>
+		<td valign="middle" style="padding-left:10px;font-size:12px;"><a class="schemaguidelank" href="hjalpmedel.jsp">Hjälpmedel</a></td>
+		</tr>
+	</tbody></table>
+	</div>
+	
+	</div>
+	
+	Här kan du söka schema genom att skriva in sökord för t.ex kurs, program, lokal och signatur. <br>Du kan skriva in flera sökord separerade med mellanslag.
+	
+	<div style="width:700px;margin-top:15px;padding:5px;">
+	
+	
+<style>
+.ui-datepicker {        font-family:Garamond;        font-size: 12px;        margin-left:10px     }
+</style>
+
+<script type="text/javascript" src="js/datum-hjalp.js"></script>
+
+
+<table cellpadding="0" cellspacing="0">
+			<tbody><tr>
+				<td valign="middle" style="font-size:12px;">
+				Startdatum:
+				</td>
+				<td valign="middle" style="padding-left:5px;">
+				<input id="startdatum" type="text" style="width:100px;height:25px;" class="tooltip hasDatepicker" placeholder="yy-mm-dd" onkeyup="if (event.keyCode == 13){this.blur();}" title="yy-mm-dd <br/>(Du kan också skriva 'idag' för ett datumoberoende sökresultat)" onchange="formatera_startdatum();"><img class="ui-datepicker-trigger" src="images/calendar.gif" alt="..." title="...">
+				</td>
+			</tr><tr>
+			</tr><tr>
+				<td valign="middle" style="font-size:12px;">
+				Slutdatum:
+				</td>
+				<td valign="middle" style="padding-left:5px;">
+				<input id="slutdatum" type="text" style="width:100px;height:25px;" class="tooltip hasDatepicker" onkeyup="if (event.keyCode == 13){this.blur();}" placeholder="yy-mm-dd" title="yy-mm-dd <br/>Välj antingen ett intervall till höger eller ställ in ett exakt slutdatum i den här rutan." onchange="formatera_slutdatum();"><img class="ui-datepicker-trigger" src="images/calendar.gif" alt="..." title="...">
+				</td>
+				
+				<td valign="middle" style="padding-left:20px;font-size:12px;">
+					<input id="intervall_1" type="radio" onclick="uppdatera_intervall();" name="intervall" value="1"> 1 Dagar
+				</td>
+				
+				<td valign="middle" style="padding-left:20px;font-size:12px;">
+					<input id="intervall_2" type="radio" onclick="uppdatera_intervall();" name="intervall" value="2" checked=""> 16 Veckor
+				</td>
+				
+				<td valign="middle" style="padding-left:20px;font-size:12px;">
+					<input id="intervall_3" type="radio" onclick="uppdatera_intervall();" name="intervall" value="3"> 6 Månader
+				</td>
+				
+			</tr>
+			
+	</tbody></table>
+	
+	<table cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tbody><tr>
+			<td valign="middle" style="font-size:12px;">
+				Sökning gäller mellan: <span id="sokDatumText">2023-05-09 - 2023-08-29 (<b>2023 VT LP3 - 2023 HT LP1</b>)</span>
+			</td>
+			<td valign="middle" style="padding-left:5px;">
+				<img src="images/help.gif" class="tooltip" title="Datumintervallet styr vilka resurser som visas i sökrutorna och schemaguiden. Det styr även mellan vilka datum sökresultatet kommer att tas ut.">
+			</td>
+			<td valign="middle" style="padding-left:15px;">
+			<img id="intervall_progress" src="images/progress.gif" width="20" height="20" border="0" style="display:none;">
+			</td>
+		</tr>
+	</tbody></table>
+	
+	
+	</div>
+	
+	
+	<table cellspacing="0" cellpadding="0">
+		<tbody><tr>
+			<td valign="middle">
+			<input placeholder="Skriv sökord…" style="margin-top:10px;width:250px;font-size:12px;height:28px;" id="enkel_sokfalt" name="enkel_sokfalt" value="" onkeyup="if (event.keyCode == 13){enkel_sokning();}return false;" type="text">
+			</td>
+			<td valign="middle" style="padding-left:10px;padding-top:5px;"><input id="enkel_sokknapp" style="font-size:12px;" type="submit" value="Sök schema" class="ui-button ui-corner-all ui-widget" role="button"></td>
+			<td valign="middle" style="padding-left:15px;">
+			<img id="enkel_progress" src="images/progress.gif" width="32" height="32" border="0" style="display: none;">
+			</td>
+		</tr>
+	</tbody></table>
+	
+	</div>
+	
+	<p style="clear:both;">
+	
+	
+	
+	</p><div style="margin-top:15px;">
+		<table cellspacing="0" cellpadding="0">
+			<tbody><tr>
+				<td><a href="hjalp_sokprovider.jsp">Installera sökprovider</a></td>
+				
+				
+				
+				<td style="padding-left:10px;"><a href="hjalp_sokprovider.jsp"><img src="images/help.gif" border="0" class="tooltip" title="Sökprovidern är ett tillägg till webbläsaren som låter dig göra sökningar i webbläsarens sökruta.<br/><br/>Klicka på <img src='images/help.gif'> ikonen för mer information."></a></td>
+			</tr>
+			
+			
+			
+			
+		</tbody></table>
+	</div>
+	
+	
+	<div style="margin-top:15px;">
+		<table cellspacing="0" cellpadding="0">
+			<tbody><tr>
+				<td>
+				OBS!! Endast de första 300 bokningarna hämtas.
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+	
+	
+	<div id="enkel_resultat"><h2>Sökresultat</h2>Sökord: I0015N<br>Antal funna: 6
+			Du kan också lägga till resurser från <a href="avanceratschema.jsp">Avancerad sök</a> och <a href="ao.jsp">Schemaguide A-Ö</a> genom att klicka på ikonen <img class="tooltip" title="När du ser denna ikon vid en resurs kan du klicka för att lägga till den till Avancerad sök." src="images/mittschema_add.png" width="16" height="16"> framför en resurs.
+			<h2>Kurser</h2><ul class="resursLista"><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT22-47001-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT22-47001-">I0015N-VT22-47001-, Test av IT-system vt224 50</a><br></td></tr></tbody></table></li><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT22-47401-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT22-47401-">I0015N-VT22-47401-, Test av IT-system vt224 50</a><br></td></tr></tbody></table></li><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT23-47000-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT23-47000-">I0015N-VT23-47000-, Test av IT-system vt234 50</a><br></td></tr></tbody></table></li><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT23-47455-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT23-47455-">I0015N-VT23-47455-, Test av IT-system vt234 50</a><br></td></tr></tbody></table></li><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT24-47001-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT24-47001-">I0015N-VT24-47001-, Test av IT-system vt244 50</a><br></td></tr></tbody></table></li><li><table cellpadding="1" cellspacing="1"><tbody><tr><td valign="middle"><div style="width:16px;height:16px;"><div class="schemaIkon" title="Klicka för att lägga till Avancerad sök"><a href="#" onclick="mittSchemaResursAdd('UTB_KURSINSTANS_GRUPPER','I0015N-VT24-47509-');return false;"><img src="images/mittschema_add.png" class="schemaIkonBild"></a></div></div></td><td valign="middle" style="padding-left:5px;font-size:12px;"><a target="_blank" href="https://schema.ltu.se/setup/jsp/Schema.jsp?startDatum=idag&amp;intervallTyp=v&amp;intervallAntal=16&amp;sprak=SV&amp;sokMedAND=true&amp;forklaringar=true&amp;resurser=k.I0015N-VT24-47509-">I0015N-VT24-47509-, Test av IT-system vt244 50</a><br></td></tr></tbody></table></li></ul>
+
+
+
+</div>
+
+</div>	
+</div>
+
+
+
+
+
+<script>
+	$('input,textarea,select').tooltip({
+		altPosition: {
+			minOuterHeight: 60,
+			tagName: 'select',
+			callback: function() { return this.element.val().length > 20; },
+			position: {my: 'left+15 top', at: 'right top', collision: 'flipfit'} // Right side
+		}
+	});
+</script>
+<div style="float:right;margin-right:20px;">	
+	<center><span class="footer-version"><b>KronoX Web 5.3.4</b> © 2011, <a href="http://www.kronox.se">KronoX-konsortiet</a>, All Rights Reserved.</span>
+	</center>
+</div>	
+</div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div> <!-- end of main div -->
+
+<div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front noTitleDialog ui-draggable ui-resizable" aria-describedby="resursDialog" aria-labelledby="ui-id-1" style="display: none; position: absolute;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-1" class="ui-dialog-title">&nbsp;</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>Close</button></div><div id="resursDialog" style="font-size: 12px; padding: 0px; overflow: hidden;" class="ui-dialog-content ui-widget-content"></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all"><a class="ui-datepicker-prev ui-corner-all" data-handler="prev" data-event="click" title="Förra"><span class="ui-icon ui-icon-circle-triangle-w">Förra</span></a><a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click" title="Nästa"><span class="ui-icon ui-icon-circle-triangle-e">Nästa</span></a><div class="ui-datepicker-title"><select class="ui-datepicker-month" aria-label="Select month" data-handler="selectMonth" data-event="change"><option value="0">jan.</option><option value="1">feb.</option><option value="2">mars</option><option value="3">apr.</option><option value="4" selected="selected">maj</option><option value="5">juni</option><option value="6">juli</option><option value="7">aug.</option><option value="8">sep.</option><option value="9">okt.</option><option value="10">nov.</option><option value="11">dec.</option></select><select class="ui-datepicker-year" aria-label="Select year" data-handler="selectYear" data-event="change"><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023" selected="selected">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option></select></div></div><table class="ui-datepicker-calendar"><thead><tr><th scope="col"><span title="måndag">må</span></th><th scope="col"><span title="tisdag">ti</span></th><th scope="col"><span title="onsdag">on</span></th><th scope="col"><span title="torsdag">to</span></th><th scope="col"><span title="fredag">fr</span></th><th scope="col" class="ui-datepicker-week-end"><span title="lördag">lö</span></th><th scope="col" class="ui-datepicker-week-end"><span title="söndag">sö</span></th></tr></thead><tbody><tr><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="1">1</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="2">2</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="3">3</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="4">4</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="5">5</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="6">6</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="7">7</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="8">8</a></td><td class=" ui-datepicker-days-cell-over  ui-datepicker-current-day ui-datepicker-today" data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default ui-state-highlight ui-state-active ui-state-hover" href="#" aria-current="true" data-date="9">9</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="10">10</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="11">11</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="12">12</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="13">13</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="14">14</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="15">15</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="16">16</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="17">17</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="18">18</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="19">19</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="20">20</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="21">21</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="22">22</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="23">23</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="24">24</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="25">25</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="26">26</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="27">27</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="28">28</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="29">29</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="30">30</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="4" data-year="2023"><a class="ui-state-default" href="#" aria-current="false" data-date="31">31</a></td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td></tr></tbody></table><div class="ui-datepicker-buttonpane ui-widget-content"><button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" data-handler="today" data-event="click">Idag</button><button type="button" class="ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all" data-handler="hide" data-event="click">Stäng</button></div></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body></html>

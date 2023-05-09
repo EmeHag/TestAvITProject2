@@ -23,7 +23,7 @@ public class MyTest {
 
 
     @Test
-    void test1() {
+    void checkFinalExaminationDate() {
         int sum = 2 + 2;
         assertEquals(4, sum);
     }

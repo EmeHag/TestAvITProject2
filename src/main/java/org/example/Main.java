@@ -1,5 +1,6 @@
 package org.example;
 
+import com.codeborne.selenide.Condition;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
@@ -22,6 +23,7 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class Main {
     public static String titleHomePage = "";
+    public static String examinationDate = "";
 
     public static void main(String[] args){
         startProgramLogIn();
@@ -82,8 +84,10 @@ public class Main {
         // Switch to the new tab
         switchTo().window(1);
 
-        // Close the previous tab
-        switchTo().window(0).close();
+        // find the search field by ID and enter the value "I0015N"
+        $("#enkel_sokfalt").setValue("I0015N").pressEnter();
+
+        $(byLinkText("I0015N-VT23-47000-, Test av IT-system vt234 50")).click();
 
 
     }
