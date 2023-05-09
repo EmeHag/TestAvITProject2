@@ -1,6 +1,7 @@
 package org.example;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.ElementNotFound;
 import org.openqa.selenium.By;
 
 import java.io.File;
@@ -37,7 +38,11 @@ public class DownloadTranscript {
         $(By.cssSelector("a.institution.identityprovider.bts-dynamic-item[data-href='https://idp.ltu.se/idp/shibboleth'] li")).shouldBe(visible).click();
 
         // Choose Swedish
-        $(By.linkText("På svenska")).shouldBe(visible).click();
+        try {
+            $(By.linkText("På svenska")).shouldBe(visible).click();
+        } catch (ElementNotFound e) {
+            logger.info("Browser already in Swedish" + e.getMessage());
+        }
 
         // Click on Intyg
         $(By.linkText("Intyg")).shouldBe(visible).click();
@@ -55,11 +60,16 @@ public class DownloadTranscript {
         // Choose Registreringsintyg in the dropdown menu
         $(By.id("intygstyp")).selectOption("Registreringsintyg");
 
+        /*
+
         // Click on Skapa
         $(By.xpath("//span[text()='Skapa']")).shouldBe(visible).click();
 
         // Click the link to the newly created transcript
         $(By.linkText("Registreringsintyg")).shouldBe(visible).click();
+
+
+         */
 
         // Find the link to the PDF file
         SelenideElement pdfLink = $(By.partialLinkText("intyg"));
