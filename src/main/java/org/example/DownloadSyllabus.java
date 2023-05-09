@@ -16,10 +16,10 @@ import static org.example.Main.logger;
 public class DownloadSyllabus {
 
     public static void downloadSyllabus(){
-        // Read the JSON file
+        // Start the program and log in
         Main.chromeDriver();
 
-        // Navigate to the course syllabus
+        // Click the search button
         $(By.cssSelector("button.ltu-search-btn")).shouldBe(visible).click();
 
         // Search for the course

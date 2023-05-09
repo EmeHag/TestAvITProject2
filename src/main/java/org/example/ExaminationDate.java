@@ -14,24 +14,25 @@ import static com.codeborne.selenide.Selenide.switchTo;
 import static org.example.Main.logger;
 
 public class ExaminationDate {
-
+    // Create a variable to store the examination date
     public static String examinationDate = "";
 
     public static void checkFinalExaminationDate (){
+        // Start the program and log in
         Main.startProgramLogIn();
-        //Click on the tentamen button
+        // Click on Tentamen
         $(byXpath("//a[contains(text(),'Tentamen')]")).click();
 
-        // Click on the tentamensschema button
+        // Click on Tentamensschema
         $(byXpath("//a[contains(text(),'Tentamensschema')]")).click();
 
         // Switch to the new tab
         switchTo().window(1);
 
-        // find the search field by ID and enter the value "I0015N"
+        // Click on the search field and search for the course
         $("#enkel_sokfalt").setValue("I0015N").pressEnter();
 
-        // Click on the course link
+        // Click on the course
         $(byLinkText("I0015N-VT23-47000-, Test av IT-system vt234 50")).click();
 
         // Switch to the new tab
@@ -47,11 +48,13 @@ public class ExaminationDate {
 
             // Save the screenshot to a specific directory with a specific name
             FileUtils.copyFile(screenshotFile, new File("target/screenshots/final_examination.jpeg"));
+            logger.info("Screenshot saved to: target/screenshots/final_examination.jpeg");
         } catch (IOException e) {
             logger.error("Failed to save screenshot: " + e.getMessage());
         }
-
+        // Close the tab
         switchTo().window(0);
+        // Log out
         Main.logOut();
     }
 }

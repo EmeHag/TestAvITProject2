@@ -21,18 +21,23 @@ public class Main {
 
 
     public static void main(String[] args) {
+        //Starts the program
         startProgramLogIn();
+        //Logs out
         logOut();
     }
 
     public static void chromeDriver() {
         try {
             holdBrowserOpen = true;
+            //Locates the chromedriver.exe file
             System.setProperty("webdriver.chrome.driver", "src/main/java/chromedriver.exe");
+            //Maximizes the window
             Configuration.startMaximized = true;
+            //Opens the website
             open("https://www.ltu.se");
 
-            //Cookies
+            //Accepts the cookies
             $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible).click();
 
             logger.info("Driver initialized and cookies accepted");
@@ -42,28 +47,30 @@ public class Main {
     }
 
     public static void startProgramLogIn() {
-        //Configuration.
+        // Initialize the variables for email and password
         String email = "";
         String password = "";
 
-        // Read the JSON file
+        // Import the credentials from the json file
         try {
+            // Locate the json file
             File jsonFile = new File("C:\\temp\\ltu.json");
             ObjectMapper objectMapper = new ObjectMapper();
+            // Read the json file
             JsonNode jsonNode = objectMapper.readTree(jsonFile);
 
-            // Extract the username and password values
+            // Get the email and password from the json file
             email = jsonNode.get("ltuCredentials").get("email").asText();
             password = jsonNode.get("ltuCredentials").get("password").asText();
             logger.info("Credentials successfully imported");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-
+        // Initialize the chrome driver
         chromeDriver();
 
         try {
-            //Navigate to login
+            // Go to student portal
             $(byXpath("//a[@href='/student' and @onclick=\"gaClickEvent('First page Extra links', 'Click', '/student');\"]")).shouldBe(visible).click();
             $(byXpath("//a[@href='https://portal.ltu.se/group/student/start' and @onclick=\"gaClickEvent('First page Extra links', 'Click', 'https://portal.ltu.se/group/student/start');\"]")).click();
 
@@ -73,6 +80,7 @@ public class Main {
 
             // Click the login button
             $(byValue("LOGGA IN")).should(be(enabled)).click();
+            logger.info("Logged in successfully");
         }
         catch (Exception e) {
             logger.error("Error while logging in: " + e.getMessage());
@@ -81,9 +89,10 @@ public class Main {
 
     public static void logOut () {
         try {
+            // Click the avatar dropdown
+            $(By.id("_145_userAvatar")).click();
             // Click the logout button
-            $(By.id("_145_userAvatar")).click(); // Click the avatar dropdown
-             //logOutButton = $(By.cssSelector(".sign-out")).click(); // Click the logout button
+             //logOutButton = $(By.cssSelector(".sign-out")).click();
             logger.info("Logged out successfully");
         }
         catch (Exception e) {
