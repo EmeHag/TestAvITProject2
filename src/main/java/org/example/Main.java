@@ -28,8 +28,8 @@ public class Main {
         open("https://www.ltu.se");
 
         //Cookies
-        $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible);
-        $(By.id("CybotCookiebotDialogBodyButtonDecline")).click();
+        $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible).click();
+       // $(By.id("CybotCookiebotDialogBodyButtonDecline")).click();
     }
 
     public static void startProgramLogIn(){
@@ -53,11 +53,11 @@ public class Main {
         chromeDriver();
 
         //Navigate to login
-        $(byXpath("//a[@href='/student' and @onclick=\"gaClickEvent('First page Extra links', 'Click', '/student');\"]")).click();
+        $(byXpath("//a[@href='/student' and @onclick=\"gaClickEvent('First page Extra links', 'Click', '/student');\"]")).shouldBe(visible).click();
         $(byXpath("//a[@href='https://portal.ltu.se/group/student/start' and @onclick=\"gaClickEvent('First page Extra links', 'Click', 'https://portal.ltu.se/group/student/start');\"]")).click();
 
         // Enter username and password
-        $("input[name='username']").setValue(email);
+        $("input[name='username']").shouldBe(visible).setValue(email);
         $("input[name='password']").setValue(password);
 
         // Click the login button
