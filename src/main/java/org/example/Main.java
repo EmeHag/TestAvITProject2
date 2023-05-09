@@ -90,6 +90,7 @@ public class Main {
         // Save the examination date
         examinationDate = $(By.cssSelector("tr.data-white td.commonCell.data:last-child")).getText();
 
+        // Take a screenshot
         try {
             // Take a screenshot and save it to a file
             File screenshotFile = Screenshots.takeScreenShotAsFile();
