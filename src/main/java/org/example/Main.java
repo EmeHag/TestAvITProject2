@@ -1,5 +1,7 @@
 package org.example;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.commands.PressEnter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
@@ -35,6 +37,7 @@ public class Main {
 
         // Read the JSON file
         try {
+            // Read the JSON file
             File jsonFile = new File("C:\\temp\\ltu.json");
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(jsonFile);
@@ -81,6 +84,20 @@ public class Main {
 
         // Switch to the new tab
         switchTo().window(1);
+
+        // Close the previous tab
+        switchTo().window(0).close();
+
+        //send keys to the search field and then press enter
+        $(byId("//enkel_sokfalt")).shouldBe(Condition.visible).click();
+        $(byId("//enkel_sokfalt")).click();
+        //send keys to the search field and then press enter
+        $(byId("//enkel_sokfalt")).sendKeys("I0015N");
+
+
+
+        //press enter
+        //$(byXpath("//enkel_sokfalt")).pressEnter();
 
         // Close the previous tab
         switchTo().window(0).close();
