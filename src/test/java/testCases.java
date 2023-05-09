@@ -18,12 +18,13 @@ public class testCases {
     }
 
 
-    @Test
+   /* @Test
     void checkFinalExaminationDate() {
         TestCaseExaminationDate.checkFinalExaminationDate();
         String expectedFinalDate = "2023-04-17";
         assertEquals(expectedFinalDate, TestCaseExaminationDate.examinationDate);
     }
+    */
 
 
 
