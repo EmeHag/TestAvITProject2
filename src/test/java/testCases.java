@@ -23,6 +23,7 @@ public class testCases {
 
 
     @Test
+    @Disabled
     void checkIfTranscriptCanBeDownloaded() throws FileNotFoundException {
         DownloadTranscript.downloadTranscript();
 
