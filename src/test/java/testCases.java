@@ -14,6 +14,7 @@ public class testCases {
     @Test
     void checkFinalExaminationDate() {
         ExaminationDate.checkFinalExaminationDate();
+        // Check if the date is correct
         String expectedFinalDate = "2023-04-17";
         assertEquals(expectedFinalDate, ExaminationDate.examinationDate);
     }
@@ -29,7 +30,6 @@ public class testCases {
     @Test
     void checkIfSyllabusCanBeDownloaded() {
         DownloadSyllabus.downloadSyllabus();
-
         // Check if the file exists
         assertTrue(new File("target/downloads/kursplan.pdf").exists());
     }
@@ -37,9 +37,7 @@ public class testCases {
     @Test
     void checkCreateButton(){
         DownloadTranscript.downloadTranscript();
+        // Check if the button is visible
         assertTrue(DownloadTranscript.isSkapaIntygButtonIsVisible());
     }
-
-
-
 }
