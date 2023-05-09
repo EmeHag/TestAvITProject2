@@ -4,7 +4,6 @@ import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -12,7 +11,7 @@ import java.nio.file.StandardCopyOption;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
-public class TestCaseDownloadSyllabus {
+public class DownloadSyllabus {
 
     public static void downloadSyllabus() throws IOException {
         // Read the JSON file
