@@ -1,16 +1,15 @@
 package org.example;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration.*;
-import com.codeborne.selenide.Selenide;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+
 import static com.codeborne.selenide.Configuration.*;
 import static com.codeborne.selenide.Condition.*;
+import com.codeborne.selenide.Configuration;
+
+import static com.codeborne.selenide.Selectors.*;
+import static com.codeborne.selenide.Selenide.$;
 
 
 import java.io.File;
@@ -19,8 +18,14 @@ import java.io.IOException;
 import static com.codeborne.selenide.Selenide.*;
 
 public class Main {
+    public static String titleHomePage = "";
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
+        startProgramLogIn();
+    }
+
+    public static void startProgramLogIn(){
+        //Configuration.
         holdBrowserOpen = true;
         String email = "";
         String password = "";
@@ -42,20 +47,23 @@ public class Main {
         Configuration.startMaximized = true;
         open("https://www.ltu.se");
 
+        //Cookies
         $(By.id("CybotCookiebotDialogBodyButtonDecline")).shouldBe(visible);
         $(By.id("CybotCookiebotDialogBodyButtonDecline")).click();
 
+        //Navigate to login
+        $(byXpath("//a[@href='/student' and @onclick=\"gaClickEvent('First page Extra links', 'Click', '/student');\"]")).click();
+        $(byXpath("//a[@href='https://portal.ltu.se/group/student/start' and @onclick=\"gaClickEvent('First page Extra links', 'Click', 'https://portal.ltu.se/group/student/start');\"]")).click();
+
         // Enter username and password
-        /*$("input[name='username']").setValue(email);
+        $("input[name='username']").setValue(email);
         $("input[name='password']").setValue(password);
 
-        // Click the submit button
-        $("button[type='submit']").click();
+        // Click the login button
+        $(byValue("LOGGA IN")).should(be(enabled)).click();
 
         // Verify that the login was successful
-        $("h1").shouldHave(text("Welcome"));
-
-       // $("input[name='q']").setValue("Selenide").pressEnter();
-        //System.out.println("Title: " + title()); */
+        titleHomePage = title();
+        System.out.println(titleHomePage);
     }
 }
