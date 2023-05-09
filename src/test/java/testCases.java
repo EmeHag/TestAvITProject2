@@ -37,7 +37,7 @@ public class testCases {
     @Test
     void checkCreateButton(){
         DownloadTranscript.downloadTranscript();
-        assertTrue(DownloadTranscript.isRegistreringsintygsButtonIsVisible());
+        assertTrue(DownloadTranscript.isSkapaIntygButtonIsVisible());
     }
 
 
