@@ -1,24 +1,18 @@
 package org.example;
 
-import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Screenshots;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-
-import static com.codeborne.selenide.Configuration.*;
-import static com.codeborne.selenide.Condition.*;
-import com.codeborne.selenide.Configuration;
-
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.$;
-
-import com.codeborne.selenide.Selenide;
-import static com.codeborne.selenide.Selectors.*;
-
 
 import java.io.File;
 import java.io.IOException;
 
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Configuration.holdBrowserOpen;
+import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class Main {
@@ -87,8 +81,24 @@ public class Main {
         // find the search field by ID and enter the value "I0015N"
         $("#enkel_sokfalt").setValue("I0015N").pressEnter();
 
+        // Click on the course link
         $(byLinkText("I0015N-VT23-47000-, Test av IT-system vt234 50")).click();
 
+        // Switch to the new tab
+        switchTo().window(2);
+
+        // Save the examination date
+        examinationDate = $(By.cssSelector("tr.data-white td.commonCell.data:last-child")).getText();
+
+        try {
+            // Take a screenshot and save it to a file
+            File screenshotFile = Screenshots.takeScreenShotAsFile();
+
+            // Save the screenshot to a specific directory with a specific name
+            FileUtils.copyFile(screenshotFile, new File("target/screenshots/final_examination.jpeg"));
+        } catch (IOException e) {
+            System.out.println("Failed to save screenshot: " + e.getMessage());
+        }
 
     }
 }

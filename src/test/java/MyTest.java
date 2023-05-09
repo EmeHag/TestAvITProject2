@@ -19,13 +19,14 @@ public class MyTest {
         // Check that the title matches the expected title
         String expectedTitle = "Aktuellt - ltu.se";
         assertEquals(expectedTitle, Main.titleHomePage);
+
     }
 
 
     @Test
     void checkFinalExaminationDate() {
-        int sum = 2 + 2;
-        assertEquals(4, sum);
+        String expectedFinalDate = "2023-04-17";
+        assertEquals(expectedFinalDate, Main.examinationDate);
     }
 
     @Test
