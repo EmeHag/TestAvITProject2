@@ -1,3 +1,4 @@
+import org.example.CreateTranscript;
 import org.example.DownloadSyllabus;
 import org.example.DownloadTranscript;
 import org.example.ExaminationDate;
@@ -19,9 +20,16 @@ public class testCases {
         assertEquals(expectedFinalDate, ExaminationDate.examinationDate);
     }
 
+    @Test
+    void checkIfTranscriptCanBeCreated(){
+        CreateTranscript.CreateTranscript();
+        // Check if new transcript exists
+        assertTrue(CreateTranscript.getNewTranscript());
+    }
+
     @Disabled
     @Test
-    void checkIfTranscriptCanBeDownloaded(){
+    void checkIfTranscriptIsDownloaded(){
         DownloadTranscript.downloadTranscript();
         // Check if the file exists
         assertTrue(new File("target/downloads/Intyg.pdf").exists());
@@ -33,11 +41,5 @@ public class testCases {
         // Check if the file exists
         assertTrue(new File("target/downloads/kursplan.pdf").exists());
     }
-    @Disabled
-    @Test
-    void checkCreateButton(){
-        DownloadTranscript.downloadTranscript();
-        // Check if the button is visible
-        assertTrue(DownloadTranscript.isSkapaIntygButtonIsVisible());
-    }
+
 }
